@@ -12,3 +12,10 @@ dan `requirements.txt` atau `docker-compose.yml` bila perlu.
 
 File `.env.example`/`.env.contoh` hanya berisi nilai contoh. Salin menjadi `.env` dan ganti
 nilainya sebelum menjalankan `docker compose`.
+
+## Lisensi
+
+Kode di repositori ini berlisensi [MIT](LICENSE). Anda bebas memakai, mengubah, dan
+menyebarkan ulang kode ini, termasuk untuk keperluan komersial, dengan syarat pemberitahuan hak
+cipta di `LICENSE` dan daftar kontributor di [`CONTRIBUTORS.md`](CONTRIBUTORS.md) tetap
+dicantumkan. Naskah buku tidak termasuk dalam lisensi ini.
