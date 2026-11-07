@@ -18,4 +18,8 @@ nilainya sebelum menjalankan `docker compose`.
 Kode di repositori ini berlisensi [MIT](LICENSE). Anda bebas memakai, mengubah, dan
 menyebarkan ulang kode ini, termasuk untuk keperluan komersial, dengan syarat pemberitahuan hak
 cipta di `LICENSE` dan daftar kontributor di [`CONTRIBUTORS.md`](CONTRIBUTORS.md) tetap
-dicantumkan. Naskah buku tidak termasuk dalam lisensi ini.
+dicantumkan.
+
+Lisensi MIT hanya berlaku untuk kode. Naskah, gambar, dan tata letak ketiga buku memakai hak
+cipta penuh (hak cipta dilindungi undang-undang, UU No. 28 Tahun 2014); pengutipan untuk
+pendidikan, penelitian, dan ulasan diperbolehkan dengan menyebut sumber.
