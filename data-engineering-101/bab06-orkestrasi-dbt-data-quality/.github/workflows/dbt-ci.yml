@@ -1,0 +1,18 @@
+# CI: setiap pull request membangun model dbt pada data contoh kecil
+name: dbt-ci
+on: [pull_request]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: {python-version: "3.12"}
+      - run: pip install -r requirements.txt
+      - run: python siapkan_bronze.py 2026-11-01 --baris 2000
+      - name: dbt build (hanya model yang berubah bila manifest prod tersedia)
+        working-directory: dbt_bank
+        run: |
+          dbt snapshot --profiles-dir . --vars '{tgl: 2026-11-01}'
+          dbt build --profiles-dir . --vars '{tgl: 2026-11-01}'
+          # dengan manifest produksi: dbt build --select state:modified+ --state prod-manifest/

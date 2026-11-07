@@ -1,0 +1,4 @@
+versi,intensitas,gflops
+naif,0.25,60
+tiled16,4,900
+cublas,64,5500

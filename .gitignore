@@ -1,0 +1,10 @@
+# hasil build dan cache
+target/
+__pycache__/
+*.pyc
+.ipynb_checkpoints/
+node_modules/
+.venv/
+venv/
+# rahasia lokal
+.env

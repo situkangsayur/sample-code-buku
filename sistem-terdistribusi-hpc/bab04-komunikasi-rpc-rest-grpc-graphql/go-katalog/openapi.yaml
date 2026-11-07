@@ -1,0 +1,111 @@
+# Kontrak OpenAPI 3.1 untuk layanan katalog REST (rest/main.go).
+# Pendekatan contract-first: berkas ini disepakati dulu, kode menyusul.
+# Contoh codegen Go: oapi-codegen -generate types,std-http -package api openapi.yaml
+openapi: 3.1.0
+info: { title: Katalog, version: 1.0.0 }
+servers:
+  - url: http://localhost:8080
+paths:
+  /v1/produk/{id}:
+    get:
+      operationId: ambilProduk
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: If-None-Match, in: header, required: false, schema: { type: string } }
+      responses:
+        "200":
+          description: produk ditemukan
+          headers:
+            ETag: { schema: { type: string }, description: versi representasi }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Produk" }
+        "304":
+          description: versi di klien masih sama (If-None-Match cocok)
+        "404":
+          description: tidak ditemukan
+          content:
+            application/problem+json:
+              schema: { $ref: "#/components/schemas/Problem" }
+        "429": { $ref: "#/components/responses/TerlaluBanyak" }
+    put:
+      operationId: ubahProduk
+      description: Optimistic concurrency; If-Match wajib berisi ETag terakhir yang dibaca.
+      parameters:
+        - { name: id, in: path, required: true, schema: { type: integer, format: int64 } }
+        - { name: If-Match, in: header, required: true, schema: { type: string } }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: "#/components/schemas/ProdukMasukan" }
+      responses:
+        "200":
+          description: produk diubah
+          headers:
+            ETag: { schema: { type: string } }
+          content:
+            application/json:
+              schema: { $ref: "#/components/schemas/Produk" }
+        "400": { $ref: "#/components/responses/Masalah" }
+        "404": { $ref: "#/components/responses/Masalah" }
+        "412": { $ref: "#/components/responses/Masalah" }
+        "428": { $ref: "#/components/responses/Masalah" }
+  /v1/produk:
+    get:
+      operationId: daftarProduk
+      description: Cursor pagination; isi after dengan nilai next dari halaman sebelumnya.
+      parameters:
+        - { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100, default: 2 } }
+        - { name: after, in: query, schema: { type: string }, description: cursor buram }
+      responses:
+        "200":
+          description: satu halaman produk
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [data]
+                properties:
+                  data:
+                    type: array
+                    items: { $ref: "#/components/schemas/Produk" }
+                  next: { type: string, description: cursor halaman berikutnya bila masih ada }
+        "400": { $ref: "#/components/responses/Masalah" }
+components:
+  schemas:
+    Produk:
+      type: object
+      required: [id, nama, harga]
+      properties:
+        id: { type: integer, format: int64 }
+        nama: { type: string }
+        harga: { type: integer, format: int64 }
+    ProdukMasukan:
+      type: object
+      required: [nama, harga]
+      properties:
+        nama: { type: string, minLength: 1 }
+        harga: { type: integer, format: int64, minimum: 0 }
+    Problem:
+      # RFC 9457 Problem Details for HTTP APIs
+      type: object
+      properties:
+        type: { type: string, format: uri }
+        title: { type: string }
+        status: { type: integer }
+        detail: { type: string }
+        instance: { type: string }
+  responses:
+    Masalah:
+      description: error dengan format Problem Details
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }
+    TerlaluBanyak:
+      description: batas laju terlampaui (token bucket)
+      headers:
+        Retry-After: { schema: { type: integer }, description: detik sebelum boleh mencoba lagi }
+      content:
+        application/problem+json:
+          schema: { $ref: "#/components/schemas/Problem" }

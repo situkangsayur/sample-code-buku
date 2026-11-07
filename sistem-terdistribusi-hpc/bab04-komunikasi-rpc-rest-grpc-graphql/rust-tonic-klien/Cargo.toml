@@ -1,0 +1,16 @@
+[package]
+name = "katalog-klien"
+version = "0.1.0"
+edition = "2021"
+
+# Versi dikunci agar cocok dengan build.rs. Pada tonic 0.14 ke atas, pembangkit
+# kode pindah ke crate tonic-prost-build; sesuaikan build.rs bila menaikkan versi.
+[dependencies]
+tonic = "0.13.1"
+prost = "0.13"
+tokio = { version = "1", features = ["macros", "rt-multi-thread"] }
+
+[build-dependencies]
+tonic-build = "0.13.1"
+# protoc siap pakai, sehingga tidak perlu memasang protoc di sistem
+protoc-bin-vendored = "3"

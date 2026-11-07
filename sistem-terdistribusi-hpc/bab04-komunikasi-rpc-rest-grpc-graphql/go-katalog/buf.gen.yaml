@@ -1,0 +1,9 @@
+# Pembangkitan kode Go dari proto/ ke gen/ (plugin lokal hasil go install).
+version: v2
+plugins:
+  - local: protoc-gen-go
+    out: gen
+    opt: paths=import,module=contoh/katalog/gen
+  - local: protoc-gen-go-grpc
+    out: gen
+    opt: paths=import,module=contoh/katalog/gen

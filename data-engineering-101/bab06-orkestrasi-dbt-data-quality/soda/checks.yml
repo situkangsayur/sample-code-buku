@@ -1,0 +1,9 @@
+# Pemeriksaan SodaCL untuk tabel silver (Soda Core).
+# Jalankan: soda scan -d gudang -c soda/configuration.yml soda/checks.yml
+checks for fct_transaksi:
+  - row_count > 0
+  - duplicate_count(trx_id) = 0
+  - missing_count(nasabah_id) = 0
+  - invalid_count(jenis_akad) = 0:
+      valid values: [murabahah, musyarakah, mudharabah, ijarah, wadiah]
+  - freshness(waktu_trx) < 1d

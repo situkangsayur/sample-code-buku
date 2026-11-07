@@ -1,0 +1,28 @@
+# Lima store untuk praktik pola akses + immudb. Hanya untuk lab lokal.
+# Batasi memori; jalankan bergiliran bila laptop 8 GB. Sematkan versi image yang Anda uji.
+services:
+  postgres:
+    image: postgres:17
+    environment: {POSTGRES_PASSWORD: lab}
+    ports: ["5432:5432"]
+  redis:
+    image: redis:8
+    ports: ["6379:6379"]
+  scylla:
+    image: scylladb/scylla
+    command: --smp 1 --memory 1G --overprovisioned 1
+    ports: ["9042:9042"]
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    ports: ["8123:8123"]
+    environment: {CLICKHOUSE_PASSWORD: lab}
+  opensearch:
+    image: opensearchproject/opensearch:3
+    environment:
+      discovery.type: single-node
+      DISABLE_SECURITY_PLUGIN: "true"     # HANYA lab lokal, jangan di produksi
+      OPENSEARCH_JAVA_OPTS: "-Xms512m -Xmx512m"
+    ports: ["9200:9200"]
+  immudb:
+    image: codenotary/immudb
+    ports: ["3322:3322"]

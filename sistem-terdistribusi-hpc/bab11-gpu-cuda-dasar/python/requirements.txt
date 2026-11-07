@@ -1,0 +1,5 @@
+# Untuk CUDA 12.x (mis. Google Colab). Untuk CUDA 13, ganti cupy-cuda12x -> cupy-cuda13x
+# dan numba-cuda[cu12] -> numba-cuda[cu13].
+numpy<2.4          # numba 0.68 belum cocok dengan numpy 2.4
+cupy-cuda12x
+numba-cuda[cu12]

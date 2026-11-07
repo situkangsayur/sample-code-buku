@@ -1,0 +1,8 @@
+# Versi yang diuji/dirujuk (Oktober 2026)
+psycopg[binary]>=3.2
+redis>=5.0
+cassandra-driver>=3.29
+clickhouse-connect>=0.8
+opensearch-py>=2.7
+immudb-py>=1.5
+duckdb==1.5.6

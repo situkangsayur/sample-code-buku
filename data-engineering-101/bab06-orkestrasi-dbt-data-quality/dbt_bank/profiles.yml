@@ -1,0 +1,11 @@
+dbt_bank:
+  target: dev
+  outputs:
+    dev:                       # lingkungan pengembangan
+      type: duckdb
+      path: ../data/warehouse_dev.duckdb
+      threads: 4
+    prod:                      # lingkungan produksi: berkas/katalog berbeda
+      type: duckdb
+      path: ../data/warehouse_prod.duckdb
+      threads: 4

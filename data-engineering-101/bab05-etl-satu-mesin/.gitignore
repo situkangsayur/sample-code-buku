@@ -1,0 +1,4 @@
+data/
+state/
+datafusion-rust/target/
+__pycache__/

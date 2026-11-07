@@ -1,0 +1,18 @@
+version: 2
+sources:
+  - name: bronze
+    meta:
+      # dbt-duckdb: source dibaca langsung dari Parquet berpartisi
+      external_location: "read_parquet('../data/bronze/{name}/*/*.parquet', hive_partitioning = true)"
+    tables:
+      - name: transaksi
+        loaded_at_field: _ingest_ts
+        columns:
+          - name: trx_id
+            data_tests:
+              - unique:                  # duplikat di bronze wajar (jendela tumpang tindih)
+                  config: {severity: warn}
+        freshness:
+          warn_after: {count: 26, period: hour}
+          error_after: {count: 48, period: hour}
+      - name: nasabah

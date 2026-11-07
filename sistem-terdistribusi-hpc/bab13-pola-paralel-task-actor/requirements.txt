@@ -1,0 +1,4 @@
+ray[default]>=2.40
+dask[distributed]>=2025.1
+pandas>=2.2
+bokeh>=3.4

@@ -1,0 +1,7 @@
+[package]
+name = "agregat-rust"
+version = "0.1.0"
+edition = "2021"
+
+# Kode 11.7: tanpa dependensi eksternal. cargo run
+[dependencies]

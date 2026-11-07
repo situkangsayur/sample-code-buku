@@ -1,0 +1,6 @@
+lake/
+data/
+__pycache__/
+tiga-bahasa/rust/target/
+tiga-bahasa/scala/target/
+tiga-bahasa/scala/project/target/

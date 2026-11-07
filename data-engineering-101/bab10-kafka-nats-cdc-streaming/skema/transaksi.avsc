@@ -1,0 +1,13 @@
+{
+  "type": "record", "name": "Transaksi", "namespace": "id.banksyariah",
+  "doc": "Kode 10.3: skema Avro event transaksi versi 2. Kolom akad opsional dengan default.",
+  "fields": [
+    {"name": "id_trx",      "type": "string"},
+    {"name": "id_rekening", "type": "string"},
+    {"name": "nominal",     "type": "long"},
+    {"name": "kanal",       "type": "string"},
+    {"name": "id_perangkat", "type": "string"},
+    {"name": "event_time",  "type": {"type": "long", "logicalType": "timestamp-micros"}},
+    {"name": "akad",        "type": ["null", "string"], "default": null}
+  ]
+}

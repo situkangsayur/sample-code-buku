@@ -1,0 +1,82 @@
+# Kode 10.12: infrastruktur latihan hot path (versi lengkap).
+# PostgreSQL (wal_level=logical) -> Debezium (Kafka Connect) -> Redpanda
+# -> Spark Structured Streaming -> Iceberg di RustFS (object storage S3) dan ClickHouse.
+# NATS JetStream disertakan sebagai pembanding.
+#
+# Jalankan: docker compose up -d
+# Kata sandi hanya untuk latihan. Di produksi pakai pengelola rahasia
+# dan kunci versi image (mis. redpanda:v24.x, debezium/connect:3.x).
+services:
+  postgres:
+    image: postgres:17
+    command: ["postgres", "-c", "wal_level=logical",
+              "-c", "max_replication_slots=4", "-c", "max_wal_senders=4"]
+    environment: { POSTGRES_PASSWORD: rahasia_lab, POSTGRES_DB: bank }
+    ports: ["5432:5432"]
+    volumes:
+      - ./init/postgres.sql:/docker-entrypoint-initdb.d/01-bank.sql:ro
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d bank"]
+      interval: 5s
+      retries: 20
+
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda
+    command: [redpanda, start, --mode=dev-container, --smp=1, --memory=1G,
+              "--kafka-addr=in://0.0.0.0:9092,out://0.0.0.0:19092",
+              "--advertise-kafka-addr=in://redpanda:9092,out://localhost:19092"]
+    ports: ["19092:19092"]
+    healthcheck:
+      test: ["CMD-SHELL", "rpk cluster health | grep -q 'Healthy:.*true'"]
+      interval: 5s
+      retries: 20
+
+  connect:
+    image: quay.io/debezium/connect
+    environment: { BOOTSTRAP_SERVERS: "redpanda:9092", GROUP_ID: "1",
+                   CONFIG_STORAGE_TOPIC: cfg, OFFSET_STORAGE_TOPIC: off,
+                   STATUS_STORAGE_TOPIC: sts }
+    ports: ["8083:8083"]
+    depends_on:
+      postgres: { condition: service_healthy }
+      redpanda: { condition: service_healthy }
+
+  clickhouse:
+    image: clickhouse/clickhouse-server
+    environment: { CLICKHOUSE_PASSWORD: rahasia_lab }
+    ports: ["8123:8123"]
+    volumes:
+      - ./init/clickhouse.sql:/docker-entrypoint-initdb.d/01-fraud.sql:ro
+    ulimits:
+      nofile: { soft: 262144, hard: 262144 }
+
+  nats:
+    image: nats
+    command: ["-js", "-m", "8222"]
+    ports: ["4222:4222", "8222:8222"]
+
+  # object storage S3 untuk tabel Iceberg dan folder checkpoint: RustFS, seperti lab Bab 3 dan 4.
+  # Kredensial dapat diganti lewat .env (S3_ACCESS_KEY, S3_SECRET_KEY).
+  # Tanpa object storage: jalankan hot_path.py dengan LAKE_ROOT=file:///tmp/lake.
+  s3:
+    image: rustfs/rustfs:latest     # untuk penggunaan serius, kunci tag versi yang sudah diuji
+    command: /data
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY:-labadmin}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY:-rahasia_lab}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["s3data:/data"]
+
+  # membuat bucket "lake" sekali saat start
+  buat-bucket:
+    image: amazon/aws-cli:latest
+    depends_on: [s3]
+    environment:
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY:-labadmin}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY:-rahasia_lab}
+      AWS_REGION: us-east-1
+    entrypoint: ["sh", "-c", "until aws --endpoint-url http://s3:9000 s3 ls >/dev/null 2>&1; do sleep 1; done; aws --endpoint-url http://s3:9000 s3 mb s3://lake || true"]
+
+volumes:
+  s3data:

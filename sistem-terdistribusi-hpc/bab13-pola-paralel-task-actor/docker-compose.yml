@@ -1,0 +1,23 @@
+# Klaster Ray dan Dask kecil di satu mesin. Semua node memakai image yang sama.
+# Jalankan: docker compose up -d --scale ray-worker=2 --scale dask-worker=2
+# Versi image: samakan dengan versi pustaka Python di klien (lihat requirements.txt).
+services:
+  ray-head:
+    image: rayproject/ray:2.40.0-py311
+    command: ray start --head --port=6379 --dashboard-host=0.0.0.0 --ray-client-server-port=10001 --block
+    ports: ["8265:8265", "10001:10001"]
+    shm_size: 2gb
+  ray-worker:
+    image: rayproject/ray:2.40.0-py311
+    command: ray start --address=ray-head:6379 --block
+    shm_size: 2gb
+    depends_on: [ray-head]
+  dask-scheduler:
+    image: ghcr.io/dask/dask:latest   # sebaiknya dipatok ke versi yang sama dengan klien
+    command: dask scheduler
+    ports: ["8786:8786", "8787:8787"]
+  dask-worker:
+    image: ghcr.io/dask/dask:latest   # sebaiknya dipatok ke versi yang sama dengan klien
+    command: dask worker tcp://dask-scheduler:8786 --nthreads 1
+    volumes: ["./data:/data:ro"]
+    depends_on: [dask-scheduler]

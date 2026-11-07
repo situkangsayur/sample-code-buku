@@ -1,0 +1,5 @@
+data/
+dbt_bank/target/
+dbt_bank/logs/
+__pycache__/
+.tmp_dagster*/

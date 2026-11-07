@@ -1,0 +1,17 @@
+# Object storage S3-compatible untuk lab lokal (Kode 3.x). Jalankan: docker compose up -d
+# Memakai RustFS (Apache-2.0, ditulis dengan Rust, API dan perilaku mirip MinIO).
+# API S3: http://localhost:9000 ; konsol web: http://localhost:9001
+# Kredensial dibaca dari berkas .env (jangan masuk Git); salin dari .env.contoh.
+services:
+  s3:
+    image: rustfs/rustfs:latest   # untuk penggunaan serius, kunci tag versi yang sudah diuji
+    command: /data
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["s3data:/data"]     # volume bernama: izin berkas diatur Docker
+
+volumes:
+  s3data:

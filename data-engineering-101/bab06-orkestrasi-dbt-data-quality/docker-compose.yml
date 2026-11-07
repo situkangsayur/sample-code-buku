@@ -1,0 +1,17 @@
+# Stack lab lokal. Mode standalone Airflow HANYA untuk lab.
+# Tag image disematkan ke versi yang diuji (Oktober 2026); jangan memakai :latest.
+services:
+  postgres:                 # sumber tiruan + metadata Airflow
+    image: postgres:17.11
+    environment: {POSTGRES_PASSWORD: lab}
+    ports: ["5432:5432"]
+  airflow:
+    image: apache/airflow:3.3.2-python3.12
+    command: standalone
+    ports: ["8080:8080"]
+    environment:
+      PROYEK_DIR: /opt/proyek
+      PY_BIN: /home/airflow/.local/bin
+    volumes:
+      - ./dags:/opt/airflow/dags
+      - ./:/opt/proyek

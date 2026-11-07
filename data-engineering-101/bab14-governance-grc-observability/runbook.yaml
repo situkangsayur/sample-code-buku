@@ -1,0 +1,13 @@
+runbook: freshness-silver-transaksi
+pemicu: freshness > 30 menit (SLO 15 menit)
+pemilik: tim-data-platform (on-call)
+langkah:
+  - Cek consumer lag Kafka topik core.transaksi (dasbor Grafana)
+  - Lag naik? Cek job streaming: status, checkpoint terakhir, error
+  - Lag nol tetapi data lama? Sumber berhenti: cek konektor Debezium
+    dan WAL PostgreSQL sumber
+  - Job mati? Restart dari checkpoint terakhir.
+    JANGAN reset offset ke latest (data hilang)
+  - Tandai dasbor saldo dengan label "data tertunda"
+  - Setelah pulih, bandingkan volume per jam dengan acuan, tutup insiden
+eskalasi: "> 60 menit -> SEV-2, hubungi lead platform"

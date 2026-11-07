@@ -1,0 +1,31 @@
+# Kode 11.11: kerangka laboratorium jalur hot dan cold. docker compose up -d
+services:
+  redpanda:
+    image: docker.redpanda.com/redpandadata/redpanda:v26.2.6
+    command: [redpanda, start, --mode=dev-container, --smp=1,
+              "--kafka-addr=in://0.0.0.0:9092,out://0.0.0.0:19092",
+              "--advertise-kafka-addr=in://redpanda:9092,out://localhost:19092"]
+    ports: ["19092:19092"]
+  clickhouse:
+    image: clickhouse/clickhouse-server:26.3
+    environment: { CLICKHOUSE_PASSWORD: "${CLICKHOUSE_PASSWORD}" }   # dari .env
+    volumes: ["./clickhouse/storage.xml:/etc/clickhouse-server/config.d/storage.xml"]
+    ports: ["8123:8123"]
+  redis:
+    image: valkey/valkey:9.0
+    ports: ["6379:6379"]
+  s3:                                    # object storage kompatibel S3
+    image: chrislusf/seaweedfs:3.99
+    command: server -s3 -dir=/data
+    ports: ["8333:8333"]
+  iceberg-rest:
+    image: apache/iceberg-rest-fixture:1.10.1
+    environment:
+      CATALOG_WAREHOUSE: s3://lake/
+      CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      CATALOG_S3_ENDPOINT: http://s3:8333
+    ports: ["8181:8181"]
+  spark:
+    image: apache/spark:4.0.4-python3
+    command: ["sleep", "infinity"]       # jalankan job lewat docker exec
+    volumes: ["./:/kerja"]

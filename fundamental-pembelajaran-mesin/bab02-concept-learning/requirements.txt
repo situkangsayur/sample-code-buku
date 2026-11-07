@@ -1,0 +1,1 @@
+# Contoh bab ini hanya memakai pustaka standar Python 3.10+.

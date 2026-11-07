@@ -1,0 +1,31 @@
+# Model semantik dan metrik (dbt Semantic Layer / MetricFlow).
+# Sintaks dapat berbeda antarversi dbt; cocokkan dengan dokumentasi versi Anda.
+semantic_models:
+  - name: nasabah
+    model: ref('dim_nasabah')
+    defaults:
+      agg_time_dimension: tgl_buka
+    entities:
+      - {name: nasabah_id, type: primary}
+    dimensions:
+      - name: tgl_buka
+        type: time
+        type_params: {time_granularity: day}
+      - {name: segmen, type: categorical}
+      - {name: kode_cabang, type: categorical}
+    measures:
+      - {name: nasabah_baru, agg: count, expr: nasabah_id}
+      - name: aktif_30h
+        agg: sum
+        expr: "case when aktif_30_hari then 1 else 0 end"
+
+metrics:
+  - name: tingkat_aktivasi_30h
+    label: Tingkat aktivasi 30 hari
+    description: >
+      Porsi nasabah baru dengan minimal satu transaksi finansial
+      buatan nasabah dalam 30 hari sejak pembukaan rekening.
+    type: ratio
+    type_params:
+      numerator: aktif_30h
+      denominator: nasabah_baru

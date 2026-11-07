@@ -1,0 +1,29 @@
+# Kode 8.8: klaster Spark standalone (1 master, 2 worker) + RustFS (object storage S3, seperti Bab 3).
+# Kredensial S3 dibaca dari berkas .env (jangan masuk Git); salin dari .env.contoh.
+# Jalankan: docker compose up -d --scale spark-worker=2
+services:
+  s3:
+    image: rustfs/rustfs:latest   # untuk penggunaan serius, kunci tag versi yang sudah diuji
+    command: /data
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports: ["9000:9000", "9001:9001"]
+    volumes: ["./s3data:/data"]
+  spark-master:
+    image: apache/spark:3.5.1-python3
+    command: /opt/spark/bin/spark-class org.apache.spark.deploy.master.Master
+    ports: ["7077:7077", "8080:8080", "4040:4040"]
+    volumes: ["./:/opt/kerja"]
+  spark-worker:
+    image: apache/spark:3.5.1-python3
+    command: >
+      /opt/spark/bin/spark-class org.apache.spark.deploy.worker.Worker
+      spark://spark-master:7077
+    environment:
+      SPARK_WORKER_CORES: "2"
+      SPARK_WORKER_MEMORY: "2g"
+    volumes: ["./:/opt/kerja"]
+    depends_on: [spark-master]
+    deploy: { replicas: 2 }

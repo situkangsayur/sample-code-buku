@@ -1,0 +1,14 @@
+# PostgreSQL serving + Metabase. Salin .env.example ke .env lebih dulu.
+services:
+  serving:
+    image: postgres:17
+    environment:
+      POSTGRES_PASSWORD: ${PG_ADMIN_PASSWORD}     # dari .env, tidak di Git
+      BI_READER_PASSWORD: ${BI_READER_PASSWORD}   # akun read-only alat BI
+      POSTGRES_DB: gold
+    ports: ["5432:5432"]
+    volumes: ["./sql/init.sh:/docker-entrypoint-initdb.d/init.sh:ro"]
+  metabase:
+    image: metabase/metabase:v0.64.3.4          # versi dikunci, bukan latest
+    ports: ["3000:3000"]
+    depends_on: [serving]

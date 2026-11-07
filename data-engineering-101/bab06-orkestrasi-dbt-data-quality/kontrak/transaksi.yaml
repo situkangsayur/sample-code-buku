@@ -1,0 +1,18 @@
+# Data contract antara tim aplikasi core banking (produsen) dan tim data (konsumen).
+# Bentuk ringkas yang terinspirasi Open Data Contract Standard; sesuaikan dengan alat Anda.
+kontrak: core.transaksi
+versi: 1.2.0
+pemilik_produsen: tim-core-banking
+pemilik_konsumen: tim-data-platform
+skema:
+  - {kolom: trx_id,      tipe: string,        wajib: true,  unik: true}
+  - {kolom: rekening_id, tipe: integer,       wajib: true}
+  - {kolom: jenis_akad,  tipe: string,        wajib: true,
+     nilai: [murabahah, musyarakah, mudharabah, ijarah, wadiah]}
+  - {kolom: nominal,     tipe: decimal(18,2), wajib: true,  minimum: 0.01}
+  - {kolom: waktu_trx,   tipe: timestamp,     wajib: true}
+sla:
+  freshness: data H-1 lengkap sebelum 05.00 WIB
+  ketersediaan: 99.5% per bulan
+perubahan:
+  aturan: kolom baru boleh (minor); hapus/ganti tipe kolom wajib versi mayor dan pemberitahuan 30 hari

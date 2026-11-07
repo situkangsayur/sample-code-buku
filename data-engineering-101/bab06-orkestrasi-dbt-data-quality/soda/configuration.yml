@@ -1,0 +1,5 @@
+# Sumber data DuckDB untuk Soda (paket soda-core-duckdb)
+data_source gudang:
+  type: duckdb
+  path: data/warehouse_dev.duckdb
+  read_only: true

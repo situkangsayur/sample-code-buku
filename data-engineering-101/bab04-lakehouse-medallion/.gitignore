@@ -1,0 +1,10 @@
+lake/
+lake-spark/
+delta/
+folder_polos/
+lab/data/
+lab/.env
+spark-warehouse/
+metastore_db/
+derby.log
+__pycache__/

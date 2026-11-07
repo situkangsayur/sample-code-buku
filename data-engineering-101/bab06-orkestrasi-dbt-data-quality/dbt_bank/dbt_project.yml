@@ -1,0 +1,14 @@
+name: dbt_bank
+version: "1.0.0"
+profile: dbt_bank
+model-paths: ["models"]
+snapshot-paths: ["snapshots"]
+test-paths: ["tests"]
+macro-paths: ["macros"]
+vars:
+  tgl: "2026-11-01"          # tanggal logis; diisi orchestrator: --vars '{tgl: ...}'
+models:
+  dbt_bank:
+    staging: {+materialized: view}
+    silver:  {+materialized: table}
+    gold:    {+materialized: table}

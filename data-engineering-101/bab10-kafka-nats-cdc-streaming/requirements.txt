@@ -1,0 +1,9 @@
+confluent-kafka>=2.3
+requests>=2.31
+psycopg[binary]>=3.1
+nats-py>=2.6
+# PySpark 3.5 agar cocok dengan paket JAR Scala 2.12 di hot_path.py; butuh Java 17
+pyspark>=3.5,<3.6
+pandas>=2.0,<3
+pyarrow>=14
+clickhouse-connect>=0.7

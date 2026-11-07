@@ -1,0 +1,21 @@
+// Kontrak layanan katalog: satu sumber kebenaran untuk klien dan server
+// dalam bahasa apa pun (Go, Rust, Python, ...).
+syntax = "proto3";
+package katalog.v1;
+option go_package = "contoh/katalog/gen/katalogv1";
+
+service Katalog {
+  rpc AmbilProduk(AmbilProdukRequest) returns (Produk);          // unary
+  rpc PantauHarga(AmbilProdukRequest) returns (stream Produk);   // server streaming
+  rpc ImporProduk(stream Produk) returns (RingkasanImpor);       // client streaming
+  rpc Tawar(stream Tawaran) returns (stream Tawaran);             // bidirectional
+}
+
+message AmbilProdukRequest { int64 id = 1; }
+message Produk {
+  int64  id    = 1;
+  string nama  = 2;
+  int64  harga = 3;
+}
+message RingkasanImpor { int32 jumlah = 1; }
+message Tawaran { int64 id = 1; int64 harga = 2; }

@@ -1,0 +1,11 @@
+{ "Rules": [ {
+  "ID": "transaksi-tiering",
+  "Filter": { "Prefix": "bronze/transaksi/" },
+  "Status": "Enabled",
+  "Transitions": [
+    { "Days": 30,   "StorageClass": "STANDARD_IA" },
+    { "Days": 395,  "StorageClass": "GLACIER_IR" },
+    { "Days": 1825, "StorageClass": "DEEP_ARCHIVE" }
+  ],
+  "Expiration": { "Days": 3653 }
+} ] }

@@ -1,0 +1,3 @@
+numpy>=2.0
+# opsional, hanya untuk hmmlearn_opsional.py:
+# hmmlearn>=0.3

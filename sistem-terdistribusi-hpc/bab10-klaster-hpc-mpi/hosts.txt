@@ -1,0 +1,6 @@
+# Hostfile Open MPI untuk PC lab (ganti dengan nama PC Anda).
+# slots = jumlah core yang boleh dipakai di mesin itu.
+lab-ds-01 slots=4
+lab-ds-02 slots=4
+lab-ds-03 slots=4
+lab-ds-04 slots=4

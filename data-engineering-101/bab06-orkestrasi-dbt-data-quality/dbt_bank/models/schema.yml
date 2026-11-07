@@ -1,0 +1,37 @@
+version: 2
+models:
+  - name: stg_transaksi              # gerbang sebelum silver
+    columns:
+      - name: nominal
+        data_tests:
+          - not_null                     # completeness / validity: nominal rusak -> null
+      - name: jenis_akad
+        data_tests:
+          - accepted_values:             # validity: akad di luar domain menghentikan silver
+              arguments:
+                values: [murabahah, musyarakah, mudharabah, ijarah, wadiah]
+  - name: fct_transaksi
+    columns:
+      - name: trx_id
+        data_tests: [unique, not_null]   # uniqueness, completeness
+      - name: jenis_akad
+        data_tests:
+          - accepted_values:             # validity
+              arguments:
+                values: [murabahah, musyarakah, mudharabah, ijarah, wadiah]
+      - name: nasabah_id
+        data_tests:
+          - relationships:               # consistency antar tabel
+              arguments:
+                to: ref('dim_nasabah')
+                field: nasabah_id
+      - name: nominal
+        data_tests:
+          - not_null
+          - nominal_positif:
+              config: {severity: error}
+  - name: gold_harian_cabang
+    data_tests:
+      - jumlah_cabang_minimal:          # completeness: semua cabang aktif mengirim data
+          arguments:
+            minimal: 6

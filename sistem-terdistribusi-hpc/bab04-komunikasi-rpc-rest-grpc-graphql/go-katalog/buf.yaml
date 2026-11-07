@@ -1,0 +1,16 @@
+# Konfigurasi modul Buf: lint dan pemeriksaan breaking change.
+version: v2
+modules:
+  - path: proto
+lint:
+  use:
+    - STANDARD
+  except:
+    # nama service dan pesan sengaja sama dengan buku (tanpa akhiran Service/Response)
+    - SERVICE_SUFFIX
+    - RPC_REQUEST_RESPONSE_UNIQUE
+    - RPC_RESPONSE_STANDARD_NAME
+    - RPC_REQUEST_STANDARD_NAME
+breaking:
+  use:
+    - FILE

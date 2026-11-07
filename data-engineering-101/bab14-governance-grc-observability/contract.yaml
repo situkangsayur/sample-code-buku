@@ -1,0 +1,14 @@
+kontrak: transaksi_rekening
+versi: 1.2.0
+pemilik: divisi-dana@bank.example
+steward: analis-dana@bank.example
+klasifikasi: PII.Spesifik
+sla:
+  kesegaran_maks_menit: 5
+  ketersediaan: 99.5
+skema:
+  - {nama: id_transaksi, tipe: string, unik: true, wajib: true}
+  - {nama: nik, tipe: string, pii: true}       # wajib ditokenisasi di silver
+  - {nama: nominal, tipe: decimal, aturan: "> 0", wajib: true}
+  - {nama: waktu, tipe: timestamp, wajib: true}
+perubahan: "kompatibel-mundur; hapus atau ganti nama kolom = versi mayor"

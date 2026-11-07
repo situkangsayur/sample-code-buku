@@ -1,0 +1,9 @@
+{
+  "name": "bab06-event-loop",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Kode 6.12: event loop Node.js, I/O-bound vs CPU-bound, worker_threads",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^5.1.0" }
+}

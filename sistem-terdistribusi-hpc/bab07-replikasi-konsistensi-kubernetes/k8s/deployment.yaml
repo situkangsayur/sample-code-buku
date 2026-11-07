@@ -1,0 +1,43 @@
+# Deployment layanan katalog: tiga replika tersebar, dengan probe dan
+# permintaan sumber daya. Image katalog:v1 dimuat ke kind dengan
+# 'kind load docker-image katalog:v1 --name sister' (lihat praktikum.sh).
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: katalog
+  labels: {app: katalog}
+spec:
+  replicas: 3
+  selector:
+    matchLabels: {app: katalog}
+  strategy:
+    type: RollingUpdate
+    rollingUpdate: {maxUnavailable: 0, maxSurge: 1}  # ganti pod satu per satu
+  template:
+    metadata:
+      labels: {app: katalog}
+    spec:
+      terminationGracePeriodSeconds: 20   # cukup untuk berhenti rapi (lihat main.go)
+      topologySpreadConstraints:          # sebar replika ke node berbeda
+      - maxSkew: 1
+        topologyKey: kubernetes.io/hostname
+        whenUnsatisfiable: ScheduleAnyway
+        labelSelector: {matchLabels: {app: katalog}}
+      containers:
+      - name: katalog
+        image: katalog:v1
+        imagePullPolicy: IfNotPresent     # image lokal dari kind load, jangan tarik dari registry
+        ports: [{containerPort: 8080}]
+        env:
+        - {name: PEMANASAN, value: "2s"}
+        - {name: BEBAN_CPU, value: "0s"}  # mis. "5ms" untuk mencoba HPA
+        readinessProbe:                   # siap menerima lalu lintas?
+          httpGet: {path: /readyz, port: 8080}
+          periodSeconds: 2
+        livenessProbe:                    # masih hidup?
+          httpGet: {path: /healthz, port: 8080}
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        resources:
+          requests: {cpu: 100m, memory: 64Mi}
+          limits:   {memory: 128Mi}

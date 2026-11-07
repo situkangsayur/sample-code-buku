@@ -1,0 +1,16 @@
+<!-- Storage policy untuk Kode 11.5: volume 'cepat' (default) dan 'dingin'. -->
+<clickhouse>
+  <storage_configuration>
+    <disks>
+      <dingin_disk><path>/var/lib/clickhouse/dingin/</path></dingin_disk>
+    </disks>
+    <policies>
+      <default>
+        <volumes>
+          <cepat><disk>default</disk></cepat>
+          <dingin><disk>dingin_disk</disk></dingin>
+        </volumes>
+      </default>
+    </policies>
+  </storage_configuration>
+</clickhouse>

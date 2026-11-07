@@ -1,0 +1,10 @@
+[package]
+name = "baseline-datafusion"
+version = "0.1.0"
+edition = "2021"
+
+# Kode 9.12: baseline satu mesin dengan DataFusion.
+# cargo run --release  (dijalankan dari folder yang memuat data/silver)
+[dependencies]
+datafusion = "49"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

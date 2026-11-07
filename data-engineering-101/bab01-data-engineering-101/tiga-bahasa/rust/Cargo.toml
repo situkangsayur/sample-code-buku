@@ -1,0 +1,8 @@
+[package]
+name = "total-kanal"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+datafusion = "50"
+tokio = { version = "1", features = ["rt-multi-thread", "macros"] }

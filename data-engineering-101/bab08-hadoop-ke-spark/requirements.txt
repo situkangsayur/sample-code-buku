@@ -1,0 +1,4 @@
+numpy>=1.26
+pyspark>=3.5,<5
+pandas>=2.0,<3
+pyarrow>=14

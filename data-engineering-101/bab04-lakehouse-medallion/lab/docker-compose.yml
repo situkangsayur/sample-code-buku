@@ -1,0 +1,38 @@
+# Kode 4.25: lab lakehouse lokal: object storage S3 (RustFS) + katalog REST Iceberg.
+# Isi .env:  S3_ACCESS_KEY=...  S3_SECRET_KEY=...   (jangan dimasukkan ke Git)
+# Kunci tag image ke versi tertentu untuk penggunaan serius.
+services:
+  s3:
+    image: rustfs/rustfs:latest
+    command: /data
+    environment:
+      RUSTFS_ACCESS_KEY: ${S3_ACCESS_KEY}
+      RUSTFS_SECRET_KEY: ${S3_SECRET_KEY}
+      RUSTFS_CONSOLE_ENABLE: "true"
+    ports: ["${S3_PORT:-9000}:9000", "9001:9001"]
+    volumes: ["s3data:/data"]     # volume bernama: izin berkas diatur Docker
+
+  buat-bucket:              # sekali jalan: membuat bucket "lake"
+    image: amazon/aws-cli:latest
+    depends_on: [s3]
+    environment:
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      AWS_REGION: us-east-1
+    entrypoint: ["sh", "-c", "sleep 3; aws --endpoint-url http://s3:9000 s3 mb s3://lake || true"]
+
+  iceberg-rest:             # katalog REST rujukan proyek Iceberg (untuk lab)
+    image: apache/iceberg-rest-fixture:latest
+    depends_on: [buat-bucket]
+    ports: ["${REST_PORT:-8181}:8181"]
+    environment:
+      AWS_ACCESS_KEY_ID: ${S3_ACCESS_KEY}
+      AWS_SECRET_ACCESS_KEY: ${S3_SECRET_KEY}
+      AWS_REGION: us-east-1
+      CATALOG_WAREHOUSE: s3://lake/
+      CATALOG_IO__IMPL: org.apache.iceberg.aws.s3.S3FileIO
+      CATALOG_S3_ENDPOINT: http://s3:9000
+      CATALOG_S3_PATH__STYLE__ACCESS: "true"
+
+volumes:
+  s3data:
