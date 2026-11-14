@@ -1,0 +1,11 @@
+flowchart TD
+    A([mulai]) --> B[total = 0]
+    B --> C[/baca x/]
+    C --> D{x != 0?}
+    D -- ya --> E{x > 0?}
+    E -- ya --> F[total = total + x]
+    E -- tidak --> G[/baca x/]
+    F --> G
+    G --> D
+    D -- tidak --> H[/tulis total/]
+    H --> I([selesai])

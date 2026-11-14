@@ -1,0 +1,8 @@
+[package]
+name = "alg101-bab07"
+version = "0.1.0"
+edition = "2021"
+# newton_sqrt memakai u64::isqrt yang stabil sejak Rust 1.84
+rust-version = "1.84"
+
+[dependencies]

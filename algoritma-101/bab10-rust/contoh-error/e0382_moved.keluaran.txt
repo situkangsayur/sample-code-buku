@@ -1,0 +1,26 @@
+error[E0382]: borrow of moved value: `v`
+ --> e0382_moved.rs:9:28
+  |
+7 |     let v = vec![3, 1, 4];
+  |         - move occurs because `v` has type `Vec<i32>`, which does not implement the `Copy` trait
+8 |     let s = jumlah(v);
+  |                    - value moved here
+9 |     println!("{} {:?}", s, v);
+  |                            ^ value borrowed here after move
+  |
+note: consider changing this parameter type in function `jumlah` to borrow instead if owning the value isn't necessary
+ --> e0382_moved.rs:2:14
+  |
+2 | fn jumlah(a: Vec<i32>) -> i32 {
+  |    ------    ^^^^^^^^ this parameter takes ownership of the value
+  |    |
+  |    in this function
+  = note: this error originates in the macro `$crate::format_args_nl` which comes from the expansion of the macro `println` (in Nightly builds, run with -Z macro-backtrace for more info)
+help: consider cloning the value if the performance cost is acceptable
+  |
+8 |     let s = jumlah(v.clone());
+  |                     ++++++++
+
+error: aborting due to 1 previous error
+
+For more information about this error, try `rustc --explain E0382`.

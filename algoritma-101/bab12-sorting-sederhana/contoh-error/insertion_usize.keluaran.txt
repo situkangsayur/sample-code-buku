@@ -1,0 +1,14 @@
+warning: comparison is useless due to type limits
+ --> ~/Documents/sample-code-buku/algoritma-101/bab12-sorting-sederhana/contoh-error/insertion_usize.rs:6:15
+  |
+6 |         while j >= 0 && a[j] > kunci {
+  |               ^^^^^^
+  |
+  = note: `#[warn(unused_comparisons)]` on by default
+
+warning: 1 warning emitted
+
+
+thread 'main' (965505) panicked at ~/Documents/sample-code-buku/algoritma-101/bab12-sorting-sederhana/contoh-error/insertion_usize.rs:8:13:
+attempt to subtract with overflow
+note: run with `RUST_BACKTRACE=1` environment variable to display a backtrace

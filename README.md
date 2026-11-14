@@ -9,6 +9,7 @@ dan `requirements.txt` atau `docker-compose.yml` bila perlu.
 | [`sistem-terdistribusi-hpc/`](sistem-terdistribusi-hpc/) | *Sistem Terdistribusi dan Komputasi Berkinerja Tinggi* (14 bab) |
 | [`data-engineering-101/`](data-engineering-101/) | *Data Engineering 101* (14 bab) |
 | [`fundamental-pembelajaran-mesin/`](fundamental-pembelajaran-mesin/) | *Fundamental Pembelajaran Mesin*, bersama Hairul Umam (17 bab) |
+| [`algoritma-101/`](algoritma-101/) | *Algoritma 101*, dua jilid (Jilid 1 Bab 1–19, Jilid 2 Bab 20–40; Python dan Rust) |
 
 File `.env.example`/`.env.contoh` hanya berisi nilai contoh. Salin menjadi `.env` dan ganti
 nilainya sebelum menjalankan `docker compose`.

@@ -1,0 +1,6 @@
+[package]
+name = "bab29-p-np"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]

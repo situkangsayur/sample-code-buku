@@ -1,0 +1,9 @@
+[package]
+name = "bab14_analisis_loop_rekursi_memori"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+
+[profile.release]
+opt-level = 3

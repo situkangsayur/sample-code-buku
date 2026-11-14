@@ -1,0 +1,6 @@
+[package]
+name = "bab02-hilbert-turing"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
